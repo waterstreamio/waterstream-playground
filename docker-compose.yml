@@ -1,9 +1,9 @@
 version: '3.3'
 
 networks:
-  waterstream-demo:
+  waterstream-playground:
     external:
-      name: waterstream-demo
+      name: waterstream-playground
 
 volumes:
   grafana-data:
@@ -13,7 +13,7 @@ services:
     image: "confluentinc/cp-zookeeper:${CONFLUENT_VERSION}"
     container_name: ws-playground-zookeeper
     networks:
-      - waterstream-demo
+      - waterstream-playground
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -25,7 +25,7 @@ services:
     image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
     container_name: ws-playground-kafka
     networks:
-      - waterstream-demo
+      - waterstream-playground
     depends_on:
       - zookeeper
     environment:
@@ -49,7 +49,7 @@ services:
   kafka-setup:
     image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
     networks:
-      - waterstream-demo
+      - waterstream-playground
     depends_on:
       - kafka
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
@@ -71,7 +71,7 @@ services:
     image: "simplematter/waterstream-kafka-minified:${WATERSTREAM_VERSION}"
     container_name: waterstream-kafka-playground
     networks:
-      - waterstream-demo
+      - waterstream-playground
     depends_on:
       - kafka-setup
     environment:
@@ -104,7 +104,7 @@ services:
     image: prom/prometheus:v2.12.0
     container_name: ws-playground-prometheus
     networks:
-      - waterstream-demo
+      - waterstream-playground
     volumes:
       - ./prometheusConfig.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -115,7 +115,7 @@ services:
     image: grafana/grafana:7.0.3
     container_name: ws-playground-grafana
     networks:
-      - waterstream-demo
+      - waterstream-playground
     volumes:
       - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./grafana/dashboard-provider.yaml:/etc/grafana/provisioning/dashboards/provider.yaml
@@ -135,7 +135,7 @@ services:
   grafana-setup:
     image: curlimages/curl:7.69.1
     networks:
-      - waterstream-demo
+      - waterstream-playground
     depends_on:
       - grafana
     volumes:
@@ -143,3 +143,26 @@ services:
     command: "/bin/sh /etc/grafana/provisionGrafana.sh"
     restart: "no"
 
+  ksqldb:
+    image: "confluentinc/cp-ksql-server:${KSQL_VERSION}"
+    container_name: ws-playground-ksql
+    networks:
+      - waterstream-playground
+    environment:
+      KSQL_BOOTSTRAP_SERVERS: kafka:9092
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_KSQL_SERVICE_ID: ksql_playground_1_
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+
+  ksqldb-ui:
+    image: "matsumana/tsujun:0.0.1"
+    container_name: ws-playground-ksqldb-ui
+    networks:
+      - waterstream-playground
+    environment:
+      KSQL_SERVERS: http://ksqldb:8088
+    ports:
+      - "8089:8080"
+    restart: unless-stopped

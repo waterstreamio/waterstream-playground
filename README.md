@@ -31,6 +31,8 @@ the Prometheus datasource, but no dashboards - it has to be uploaded manually if
 Also default dashboard has to be set manually.
 Volume is configured for Grafana data so that the changes performed via UI survive container restarts 
 (including `docker-compose down`)
+- ksqlDB - port 8088
+- [Tsujun](https://github.com/matsumana/tsujun) - UI for ksqlDB - port 8089
 
 To stop:
 
@@ -57,6 +59,8 @@ Display all messages in Kafka default MQTT messages topic from the beginning:
 Display messages in Kafka default MQTT message topic starting from now:    
 
     kafka-console-consumer --bootstrap-server kafka:9092 --topic mqtt_messages --property print.key=true
+    
+    kafka-console-consumer --bootstrap-server kafka:9092 --topic waterstream_demo_1 --property print.key=true
     
 Send a message from console to Kafka default MQTT messages topic, use colon (`:`)  as separator between key 
 (which contains MQTT topic name) and values (which contains MQTT message body):
@@ -91,3 +95,22 @@ Send messages to "sample_topic" with QoS 0, each line is a separate message:
 Send from stdin to "sample_topic" with QoS 1, entire content is a single message: 
 
     mosquitto_pub -h localhost -p 1883 -t "sample_topic" -i mosquitto_2 -q 1 -s 
+
+
+### ksqlDB examples
+
+Open http://localhost:8089 in your browser for ksqlDB UI or run `ksqlShell.sh`.
+
+    CREATE STREAM sample_data (NAME STRING, VALUE INT) 
+    WITH (KAFKA_TOPIC = 'waterstream_demo_1', VALUE_FORMAT = 'DELIMITED');
+
+Show messages as they arrive:
+
+    select * from sample_data emit changes;
+
+Send sample message:
+
+    mosquitto_pub -h localhost -p 1883 -t "waterstream-demo-1/dev1" -i mosquitto_2 -q 0 -m "hello,1234"
+    
+To map the response topics to MQTT change `MESSAGES_TOPICS_PATTERNS` in `.env`.
+

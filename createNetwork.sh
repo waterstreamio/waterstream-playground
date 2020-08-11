@@ -1,2 +1,2 @@
 #!/bin/sh
-docker network create waterstream-demo
+docker network create waterstream-playground

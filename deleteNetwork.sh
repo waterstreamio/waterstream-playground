@@ -1,2 +1,2 @@
 #!/bin/sh
-docker network rm waterstream-demo
+docker network rm waterstream-playground
