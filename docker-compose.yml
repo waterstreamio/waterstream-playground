@@ -156,13 +156,15 @@ services:
       - "8088:8088"
     restart: unless-stopped
 
-  ksqldb-ui:
-    image: "matsumana/tsujun:0.0.1"
-    container_name: ws-playground-ksqldb-ui
-    networks:
-      - waterstream-playground
-    environment:
-      KSQL_SERVERS: http://ksqldb:8088
-    ports:
-      - "8089:8080"
-    restart: unless-stopped
+#UI didn't work for us, unfortunately - doesn't display any results, doesn't react to the incoming data
+#  ksqldb-ui:
+#    image: "matsumana/tsujun:0.0.1"
+#    container_name: ws-playground-ksqldb-ui
+#    networks:
+#      - waterstream-playground
+#    environment:
+#      KSQL_SERVER: http://ksqldb:8088
+#    ports:
+##      - "8080:8080"
+#      - "8089:8080"
+#    restart: unless-stopped

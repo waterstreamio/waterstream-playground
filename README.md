@@ -32,7 +32,6 @@ Also default dashboard has to be set manually.
 Volume is configured for Grafana data so that the changes performed via UI survive container restarts 
 (including `docker-compose down`)
 - ksqlDB - port 8088
-- [Tsujun](https://github.com/matsumana/tsujun) - UI for ksqlDB - port 8089
 
 To stop:
 
@@ -99,7 +98,7 @@ Send from stdin to "sample_topic" with QoS 1, entire content is a single message
 
 ### ksqlDB examples
 
-Open http://localhost:8089 in your browser for ksqlDB UI or run `ksqlShell.sh`.
+Run `./ksqlShell.sh` to open ksql console. Create stream:
 
     CREATE STREAM sample_data (NAME STRING, VALUE INT) 
     WITH (KAFKA_TOPIC = 'waterstream_demo_1', VALUE_FORMAT = 'DELIMITED');
