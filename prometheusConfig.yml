@@ -1,0 +1,16 @@
+global:
+  scrape_interval:     15s
+
+scrape_configs:
+  - job_name: 'waterstream-kafka'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 10s
+
+    static_configs:
+      - targets: ["waterstream:1884"]
+        labels:
+          service: "waterstream-monitoring"
+      - targets: ["kafka:9192"]
+        labels:
+          service: "kafka"

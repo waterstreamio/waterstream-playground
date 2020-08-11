@@ -1,0 +1,145 @@
+version: '3.3'
+
+networks:
+  waterstream-demo:
+    external:
+      name: waterstream-demo
+
+volumes:
+  grafana-data:
+
+services:
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:${CONFLUENT_VERSION}"
+    container_name: ws-playground-zookeeper
+    networks:
+      - waterstream-demo
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    restart: unless-stopped
+
+  kafka:
+    image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
+    container_name: ws-playground-kafka
+    networks:
+      - waterstream-demo
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # Applications from other containers need "kafka" listener, applications on the host machine - "localhost"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_OPTS: "-javaagent:/var/addons/jmx_prometheus_javaagent-0.13.0.jar=9192:/var/addons/jmx_exporter/kafka-0-8-2.yml"
+    volumes:
+      - ./addons:/var/addons
+    ports:
+      - "9092:9092"
+      - "9192:9192"
+    restart: unless-stopped
+
+  kafka-setup:
+    image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
+    networks:
+      - waterstream-demo
+    depends_on:
+      - kafka
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+      cub kafka-ready -b kafka:9092 1 60 && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${SESSION_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=compact --config min.compaction.lag.ms=60000 --config delete.retention.ms=600000 && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${RETAINED_MESSAGES_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=compact --config min.compaction.lag.ms=60000 --config delete.retention.ms=600000 && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${CONNECTION_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=delete --config retention.ms=600000 --config delete.retention.ms=3600000 && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${MESSAGES_DEFAULT_TOPIC} --partitions 5 --replication-factor 1 $DEFAULT_MESSAGES_RETENTION && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${WATERSTREAM_DEMO_TOPIC1} --partitions 5 --replication-factor 1 $WATERSTREAM_DEMO_MESSAGES_RETENTION && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${WATERSTREAM_DEMO_TOPIC2} --partitions 5 --replication-factor 1 $WATERSTREAM_DEMO_MESSAGES_RETENTION'"
+    # The following settings are listed here only to satisfy the image's requirements.
+    # We override the image's `command` anyways, hence this container will not start a broker.
+    environment:
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
+    restart: "no"
+
+  waterstream:
+    image: "simplematter/waterstream-kafka-minified:${WATERSTREAM_VERSION}"
+    container_name: waterstream-kafka-playground
+    networks:
+      - waterstream-demo
+    depends_on:
+      - kafka-setup
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka:9092"
+      COROUTINES_THREADS: ${COROUTINES_THREADS}
+      KAFKA_TRANSACTIONAL_ID: ""
+      MQTT_PORT: 1883
+      MQTT_WS_PORT: 1893
+      MONITORING_PORT: 1884
+      MONITORING_INCLUDE_JAVA_METRICS: "true"
+      KAFKA_MESSAGES_DEFAULT_TOPIC: ${MESSAGES_DEFAULT_TOPIC}
+#      KAFKA_MESSAGES_TOPICS_PATTERNS: "${WATERSTREAM_DEMO_TOPIC1}:waterstream-demo-1/#,${WATERSTREAM_DEMO_TOPIC2}:waterstream-demo-2/#,${WATERSTREAM_DEMO_OUT_TOPIC1}:waterstream-demo-out-1/#,${WATERSTREAM_DEMO_OUT_TOPIC2}:waterstream-demo-out-2/#"
+      KAFKA_MESSAGES_TOPICS_PATTERNS: ${MESSAGES_TOPICS_PATTERNS}
+      #some operations are permitted to anonymous, some - not
+      AUTHENTICATION_REQUIRED: "false"
+      AUTHENTICATION_METHOD_PLAIN_USERS_FILE_ENABLED: "true"
+      USERS_FILE_PATH: "/etc/users.properties"
+      AUTHORIZATION_RULES_PATH: "/etc/authorization.csv"
+    volumes:
+      - ./users.properties:/etc/users.properties
+      - ./authorization.csv:/etc/authorization.csv
+      - ./waterstream.license:/etc/waterstream.license
+    ports:
+      - "1883:1883"
+      - "1893:1893"
+      - "1884:1884"
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.12.0
+    container_name: ws-playground-prometheus
+    networks:
+      - waterstream-demo
+    volumes:
+      - ./prometheusConfig.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:7.0.3
+    container_name: ws-playground-grafana
+    networks:
+      - waterstream-demo
+    volumes:
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./grafana/dashboard-provider.yaml:/etc/grafana/provisioning/dashboards/provider.yaml
+      - ./grafana/dashboards:/var/mqttd_monitoring/dashboards
+      - ./grafana/SimpleMatter_icon_rounded4.svg:/usr/share/grafana/public/img/grafana_icon.svg
+      - ./grafana/SimpleMatter_logo_blue_nopayoff.png:/usr/share/grafana/public/img/fav32.png
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_NAME: "anonymous_org"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  grafana-setup:
+    image: curlimages/curl:7.69.1
+    networks:
+      - waterstream-demo
+    depends_on:
+      - grafana
+    volumes:
+      - ./grafana/provisionGrafana.sh:/etc/grafana/provisionGrafana.sh
+    command: "/bin/sh /etc/grafana/provisionGrafana.sh"
+    restart: "no"
+
