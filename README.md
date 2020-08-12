@@ -2,23 +2,27 @@
 
 Local demo environment for Waterstream. Requires a license for Waterstream to run.
 
+## Prerequisited:
+
+- Docker
+
+- `docker-compose`
+
+- `bash`
+
 ## How to run 
 
-Copy configuration files from `config_examples`, customize as needed:
 
-    cp config_examples/* .
-    cp config_examples/.env .
-    
-Place Waterstream license file `waterstream.license` in the project root folder. 
-Create the network, log into Dockerhub and run the containers:
+First of all you need Waterstream license file `waterstream.license` - place it in the project root folder. 
+You'll also need Dockerhub credentials - ask SimpleMatter representative to get them, then log into Dockerhub:
 
-    ./createNetwork.sh
     docker login -u <..username..> 
-    ... enter the DockerHub password here. Ask SimpleMatter representative for username and password 
-    docker-compose up -d 
+    ... enter the DockerHub password here. 
 
-If you'd like to see the container logs immediately - skip `-d` option of `docker-compose`
+Now run the script that copies default configs, creates the network and runs the containers:
 
+    ./startPlayground.sh
+     
 This includes:
 
 - ZK+Kafka
@@ -35,8 +39,15 @@ Volume is configured for Grafana data so that the changes performed via UI survi
 
 To stop:
 
-    docker-compose down
-    ./deleteNetwork.sh
+    ./stopPlayground.sh
+
+## Configuration
+
+After running `startPlayground.sh` you'll have `.env`, `authorization.csv` and `user.properties` files 
+in the project folder. You can edit them and then restart the playground to apply the changes: 
+
+    ./stopPlayground.sh
+    ./startPlayground.sh
  
 ## Sample commands
 
@@ -44,7 +55,11 @@ To stop:
 
 `exec` into Kafka container to be able to run the commands:
 
-    docker exec -ti ws-playground-kafka /bin/bash
+    docker exec -ti ws-playground-zookeeper /bin/bash
+
+or: 
+    
+    docker exec -ti ws-playground-zookeeper /bin/bash
     export KAFKA_OPTS="" #Reset JVM agent settings
 
 List Kafka topics:
