@@ -4,6 +4,9 @@ set -e
 SCRIPT_DIR=`realpath $(dirname "$0")`
 
 LICENSE_FILE=waterstream.license
+export KSQL_VERSION=4.1.4
+
+echo KSQL_VERSION=$KSQL_VERSION
 
 if test -f "$LICENSE_FILE"; then
   echo License file found
@@ -13,8 +16,8 @@ else
 fi
 
 #Copy without overwriting
-cp -nv config_examples/* .
-cp -nv config_examples/.env .
+cp -nv config_examples/* . || true
+cp -nv config_examples/.env . || true
 
 echo Making sure that network exists..
 ./createNetwork.sh || true
