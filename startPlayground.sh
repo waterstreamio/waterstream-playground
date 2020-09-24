@@ -4,9 +4,6 @@ set -e
 SCRIPT_DIR=`realpath $(dirname "$0")`
 
 LICENSE_FILE=waterstream.license
-export KSQL_VERSION=4.1.4
-
-echo KSQL_VERSION=$KSQL_VERSION
 
 if test -f "$LICENSE_FILE"; then
   echo License file found
