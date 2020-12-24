@@ -54,6 +54,7 @@ services:
       - kafka
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
       cub kafka-ready -b kafka:9092 1 60 && \
+      kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic __waterstream_heartbeat --partitions 1 --replication-factor 1 --config retention.ms=300000 && \
       kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${SESSION_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=compact --config min.compaction.lag.ms=60000 --config delete.retention.ms=600000 && \
       kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${RETAINED_MESSAGES_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=compact --config min.compaction.lag.ms=60000 --config delete.retention.ms=600000 && \
       kafka-topics --zookeeper zookeeper:2181 --create --if-not-exists --topic ${CONNECTION_TOPIC} --partitions 5 --replication-factor 1 --config cleanup.policy=delete --config retention.ms=600000 --config delete.retention.ms=3600000 && \
