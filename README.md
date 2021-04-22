@@ -12,12 +12,8 @@ Local demo environment for Waterstream. Requires a license for Waterstream to ru
 
 ## How to run 
 
-
 First of all you need Waterstream license file `waterstream.license` - place it in the project root folder. 
-You'll also need Dockerhub credentials - ask SimpleMatter representative to get them, then log into Dockerhub:
-
-    docker login -u <..username..> 
-    ... enter the DockerHub password here. 
+You can get the development license at https://waterstream.io/try-waterstream/
 
 Now run the script that copies default configs, creates the network and runs the containers:
 

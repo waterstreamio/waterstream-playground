@@ -69,7 +69,7 @@ services:
     restart: "no"
 
   waterstream:
-    image: "simplematter/waterstream-kafka-minified:${WATERSTREAM_VERSION}"
+    image: "simplematter/waterstream-kafka:${WATERSTREAM_VERSION}"
     container_name: waterstream-kafka-playground
     networks:
       - waterstream-playground
