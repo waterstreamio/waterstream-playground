@@ -51,17 +51,17 @@ in the project folder. You can edit them and then restart the playground to appl
 
 `exec` into Kafka container to be able to run the commands:
 
-    docker exec -ti ws-playground-zookeeper /bin/bash
+    docker exec -ti ws-playground-kafka /bin/bash
 
 or: 
     
-    docker exec -ti ws-playground-zookeeper /bin/bash
+    docker exec -ti ws-playground-kafka /bin/bash
     export KAFKA_OPTS="" #Reset JVM agent settings
 
 List Kafka topics:
 
-    kafka-topics --list --zookeeper zookeeper:2181
-    
+    kafka-topics --list --bootstrap-server kafka:9092
+
 Display all messages in Kafka default MQTT messages topic from the beginning:
     
     kafka-console-consumer --from-beginning --bootstrap-server kafka:9092 --topic mqtt_messages --property print.key=true
