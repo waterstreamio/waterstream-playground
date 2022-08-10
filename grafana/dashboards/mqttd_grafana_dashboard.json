@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -23,6 +23,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 2,
       "gridPos": {
@@ -31,6 +38,7 @@
         "x": 0,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 4,
       "legend": {
         "avg": false,
@@ -74,23 +82,27 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mqtt_proxy_publish_received[1m]))",
+          "expr": "sum(rate(mqtt_proxy_publish_received_total[1m]))",
           "instant": false,
+          "interval": "",
           "legendFormat": "received rate, msg/sec",
           "refId": "B"
         },
         {
-          "expr": "sum(mqtt_proxy_publish_received)",
+          "expr": "sum(mqtt_proxy_publish_received_total)",
+          "interval": "",
           "legendFormat": "received total count",
           "refId": "C"
         },
         {
-          "expr": "sum(rate(mqtt_proxy_published_to_kafka[1m]))",
+          "expr": "sum(rate(mqtt_proxy_published_to_kafka_total[1m]))",
+          "interval": "",
           "legendFormat": "kafka publish rate, msg/sec",
           "refId": "A"
         },
         {
-          "expr": "sum(mqtt_proxy_published_to_kafka)",
+          "expr": "sum(mqtt_proxy_published_to_kafka_total)",
+          "interval": "",
           "legendFormat": "kafka total publish count",
           "refId": "D"
         }
@@ -141,6 +153,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 2,
       "gridPos": {
@@ -149,6 +168,7 @@
         "x": 12,
         "y": 0
       },
+      "hiddenSeries": false,
       "id": 5,
       "legend": {
         "avg": false,
@@ -188,12 +208,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(mqtt_proxy_publish_sent[1m]))",
+          "expr": "sum(rate(mqtt_proxy_publish_sent_total[1m]))",
+          "interval": "",
           "legendFormat": "rate, msg/sec",
           "refId": "B"
         },
         {
-          "expr": "sum(mqtt_proxy_publish_sent)",
+          "expr": "sum(mqtt_proxy_publish_sent_total)",
+          "interval": "",
           "legendFormat": "total count",
           "refId": "C"
         }
@@ -202,7 +224,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Messages Sent",
+      "title": "MQTT Messages Sent",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -244,14 +266,268 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
-      "fillGradient": 3,
+      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
         "y": 8
       },
+      "hiddenSeries": false,
+      "id": 11,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Total received, bytes",
+          "yaxis": 2
+        },
+        {
+          "alias": "PUBLISH received, bytes",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(mqtt_proxy_mqtt_bytes_received_total)",
+          "interval": "",
+          "legendFormat": "Total received, bytes",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(mqtt_proxy_mqtt_bytes_received_total[1m]))",
+          "interval": "",
+          "legendFormat": "Total rate, bytes/sec",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(mqtt_proxy_publish_payload_bytes_received_total)",
+          "interval": "",
+          "legendFormat": "PUBLISH received, bytes",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(rate(mqtt_proxy_publish_payload_bytes_received_total[1m]))",
+          "interval": "",
+          "legendFormat": "PUBLISH rate, bytes/sec",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "MQTT Bytes Received",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 13,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "Bytes sent total",
+          "yaxis": 2
+        },
+        {
+          "alias": "Total sent bytes",
+          "yaxis": 2
+        },
+        {
+          "alias": "PUBLISH sent bytes",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(mqtt_proxy_mqtt_bytes_sent_total)",
+          "interval": "",
+          "legendFormat": "Total sent bytes",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(mqtt_proxy_mqtt_bytes_sent_total[1m]))",
+          "interval": "",
+          "legendFormat": "Total rate, bytes/sec",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(mqtt_proxy_publish_payload_bytes_sent_total)",
+          "interval": "",
+          "legendFormat": "PUBLISH sent bytes",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(rate(mqtt_proxy_publish_payload_bytes_sent_total[1m]))",
+          "interval": "",
+          "legendFormat": "PUBLISH rate, bytes/sec",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "MQTT Bytes Sent",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
       "id": 2,
       "legend": {
         "avg": false,
@@ -329,14 +605,22 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 16
       },
+      "hiddenSeries": false,
       "id": 7,
       "legend": {
         "avg": false,
@@ -363,12 +647,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(mqtt_proxy_connect_received)",
+          "expr": "sum(mqtt_proxy_connect_received_total)",
+          "interval": "",
           "legendFormat": "CONNECT received",
           "refId": "A"
         },
         {
-          "expr": "sum(mqtt_proxy_accept_sent)",
+          "expr": "sum(mqtt_proxy_accept_sent_total)",
+          "interval": "",
           "legendFormat": "ACCEPT sent",
           "refId": "B"
         },
@@ -378,22 +664,26 @@
           "refId": "C"
         },
         {
-          "expr": "sum(mqtt_proxy_connections_closed)",
+          "expr": "sum(mqtt_proxy_connections_closed_total)",
+          "interval": "",
           "legendFormat": "connections closed",
           "refId": "D"
         },
         {
-          "expr": "sum(mqtt_proxy_disconnect_received)",
+          "expr": "sum(mqtt_proxy_disconnect_received_total)",
+          "interval": "",
           "legendFormat": "DISCONNECT received",
           "refId": "E"
         },
         {
-          "expr": "sum(mqtt_proxy_connect_rejected)",
+          "expr": "sum(mqtt_proxy_connect_rejected_total)",
+          "interval": "",
           "legendFormat": "connections rejected",
           "refId": "F"
         },
         {
-          "expr": "sum(mqtt_proxy_overloaded_clients_disconnected)",
+          "expr": "sum(mqtt_proxy_overloaded_clients_disconnected_total)",
+          "interval": "",
           "legendFormat": "overloaded disconnected",
           "refId": "G"
         }
@@ -444,14 +734,232 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 24
       },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "MQTT bytes into mqtt_messages",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(mqtt_proxy_kafka_producer_byte_total{clientId=\"mqtt_messages_producer\"}) by (topic)",
+          "interval": "",
+          "legendFormat": "MQTT bytes into {{topic}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(mqtt_proxy_kafka_producer_byte_rate{clientId=\"mqtt_messages_producer\"}) by (topic)",
+          "interval": "",
+          "legendFormat": "MQTT rate into {{topic}}, bytes/sec",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Kafka Producers",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "hiddenSeries": false,
+      "id": 16,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "MQTT bytes into mqtt_messages",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(mqtt_proxy_kafka_consumer_incoming_byte_total{clientId =~ \"mqtt_messages_consumer_.*\"})",
+          "interval": "",
+          "legendFormat": "MQTT bytes from Kafka",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(mqtt_proxy_kafka_consumer_incoming_byte_rate{clientId =~ \"mqtt_messages_consumer_.*\"})",
+          "interval": "",
+          "legendFormat": "MQTT rate from Kafka, bytes/sec",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Kafka Consumers",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "hiddenSeries": false,
       "id": 9,
       "legend": {
         "avg": false,
@@ -481,13 +989,31 @@
           "expr": "jvm_memory_bytes_used{job=\"waterstream-kafka\", area=\"heap\", service=\"waterstream-monitoring\"}",
           "legendFormat": "Heap, bytes ({{instance}})",
           "refId": "A"
+        },
+        {
+          "expr": "jvm_memory_bytes_max{job=\"waterstream-kafka\", area=\"heap\", service=\"waterstream-monitoring\"}",
+          "interval": "",
+          "legendFormat": "\"Heap max size, bytes ({{instance}})",
+          "refId": "B"
+        },
+        {
+          "expr": "process_resident_memory_bytes{job=\"waterstream-kafka\", service=\"waterstream-monitoring\"}",
+          "interval": "",
+          "legendFormat": "Waterstream process resident memory, bytes ({{instance}})",
+          "refId": "C"
+        },
+        {
+          "expr": "jvm_buffer_pool_used_bytes{job=\"waterstream-kafka\", pool=\"direct\", service=\"waterstream-monitoring\"}",
+          "interval": "",
+          "legendFormat": "Direct buffers used, bytes ({{instance}})",
+          "refId": "D"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Waterstream Heap",
+      "title": "Waterstream Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -526,7 +1052,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 19,
+  "schemaVersion": 25,
   "style": "dark",
   "tags": [
     "mqtt"
@@ -538,9 +1064,21 @@
     "from": "now-15m",
     "to": "now"
   },
-  "timepicker": {},
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
   "timezone": "",
   "title": "Waterstream",
   "uid": "ilHi2H-Zz",
-  "version": 1
+  "version": 10
 }
