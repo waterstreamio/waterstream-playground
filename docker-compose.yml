@@ -91,6 +91,7 @@ services:
       AUTHENTICATION_METHOD_PLAIN_USERS_FILE_ENABLED: "true"
       USERS_FILE_PATH: "/etc/users.properties"
       AUTHORIZATION_RULES_PATH: "/etc/authorization.csv"
+      MONITORING_EXTENDED_METRICS: $MONITORING_EXTENDED_METRICS
     volumes:
       - ./users.properties:/etc/users.properties
       - ./authorization.csv:/etc/authorization.csv

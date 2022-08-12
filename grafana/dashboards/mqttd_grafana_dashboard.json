@@ -1049,6 +1049,114 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "max(mqtt_proxy_session_repository_last_offset_produced)  by(partition)",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Last offset produced for p {{partition}}",
+          "refId": "C"
+        },
+        {
+          "expr": "max(mqtt_proxy_session_repository_last_offset_observed) by (partition)",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Last offset observed for p{{partition}}",
+          "refId": "D"
+        },
+        {
+          "expr": "max(mqtt_proxy_session_repository_last_offset_produced)  by(partition) - max(mqtt_proxy_session_repository_last_offset_observed) by (partition)",
+          "interval": "",
+          "legendFormat": "Session processing lag for p {{partition}}, messages",
+          "refId": "E"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Session processing (requires extended metrics)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "5s",
@@ -1080,5 +1188,5 @@
   "timezone": "",
   "title": "Waterstream",
   "uid": "ilHi2H-Zz",
-  "version": 10
+  "version": 17
 }
