@@ -16,6 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
+  "iteration": 1660568337715,
   "links": [],
   "panels": [
     {
@@ -986,24 +987,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_bytes_used{job=\"waterstream-kafka\", area=\"heap\", service=\"waterstream-monitoring\"}",
+          "expr": "jvm_memory_bytes_used{job=\"$job\", area=\"heap\", service=\"$service\"}",
+          "interval": "",
           "legendFormat": "Heap, bytes ({{instance}})",
           "refId": "A"
         },
         {
-          "expr": "jvm_memory_bytes_max{job=\"waterstream-kafka\", area=\"heap\", service=\"waterstream-monitoring\"}",
+          "expr": "jvm_memory_bytes_max{job=\"$job\", area=\"heap\", service=\"$service\"}",
           "interval": "",
           "legendFormat": "\"Heap max size, bytes ({{instance}})",
           "refId": "B"
         },
         {
-          "expr": "process_resident_memory_bytes{job=\"waterstream-kafka\", service=\"waterstream-monitoring\"}",
+          "expr": "process_resident_memory_bytes{job=\"$job\", service=\"$service\"}",
           "interval": "",
           "legendFormat": "Waterstream process resident memory, bytes ({{instance}})",
           "refId": "C"
         },
         {
-          "expr": "jvm_buffer_pool_used_bytes{job=\"waterstream-kafka\", pool=\"direct\", service=\"waterstream-monitoring\"}",
+          "expr": "jvm_buffer_pool_used_bytes{job=\"$job\", pool=\"direct\", service=\"$service\"}",
           "interval": "",
           "legendFormat": "Direct buffers used, bytes ({{instance}})",
           "refId": "D"
@@ -1091,6 +1093,15 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
+      "repeat": "extended",
+      "repeatDirection": "v",
+      "scopedVars": {
+        "extended": {
+          "selected": true,
+          "text": "test2",
+          "value": "test2"
+        }
+      },
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1111,7 +1122,7 @@
           "refId": "D"
         },
         {
-          "expr": "max(mqtt_proxy_session_repository_last_offset_produced)  by(partition) - max(mqtt_proxy_session_repository_last_offset_observed) by (partition)",
+          "expr": "max(mqtt_proxy_session_repository_last_offset_produced)  by (partition) - max(mqtt_proxy_session_repository_last_offset_observed) by (partition)",
           "interval": "",
           "legendFormat": "Session processing lag for p {{partition}}, messages",
           "refId": "E"
@@ -1166,7 +1177,71 @@
     "mqtt"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "waterstream-kafka",
+          "value": "waterstream-kafka"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": "label_values(job)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "waterstream-monitoring",
+          "value": "waterstream-monitoring"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(service)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Service",
+        "multi": false,
+        "name": "service",
+        "options": [
+          {
+            "selected": false,
+            "text": "kafka",
+            "value": "kafka"
+          },
+          {
+            "selected": true,
+            "text": "waterstream-monitoring",
+            "value": "waterstream-monitoring"
+          }
+        ],
+        "query": "label_values(service)",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-15m",
@@ -1188,5 +1263,5 @@
   "timezone": "",
   "title": "Waterstream",
   "uid": "ilHi2H-Zz",
-  "version": 17
+  "version": 31
 }
