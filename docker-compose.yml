@@ -46,7 +46,7 @@ services:
       - "9192:9192"
     restart: unless-stopped
     healthcheck:
-      test: "cub kafka-ready -b kafka:9092 1 60"
+      test: "KAFKA_OPTS='' && cub kafka-ready -b kafka:9092 1 60"
       interval: 5s
       timeout: 15s
       start_period: 5s
