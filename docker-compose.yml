@@ -45,6 +45,11 @@ services:
       - "9092:9092"
       - "9192:9192"
     restart: unless-stopped
+    healthcheck:
+      test: "cub kafka-ready -b kafka:9092 1 60"
+      interval: 5s
+      timeout: 15s
+      start_period: 5s
 
   kafka-setup:
     image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
@@ -69,7 +74,7 @@ services:
     restart: "no"
 
   waterstream:
-    image: "simplematter/waterstream-kafka:${WATERSTREAM_VERSION}"
+    image: "${WATERSTREAM_IMAGE}:${WATERSTREAM_VERSION}"
     container_name: waterstream-kafka-playground
     networks:
       - waterstream-playground
@@ -146,7 +151,7 @@ services:
     restart: "no"
 
   ksqldb:
-    image: "confluentinc/cp-ksql-server:${KSQL_VERSION}"
+    image: "confluentinc/cp-ksqldb-server:${KSQL_VERSION}"
     container_name: ws-playground-ksql
     networks:
       - waterstream-playground

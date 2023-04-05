@@ -12,11 +12,24 @@ else
   exit 1
 fi
 
+ARCH=$(uname -m)
+case ARCH in
+  (arm64|aarch64|arm64v8)
+    echo ARM CPU detected: $ARCH
+    ENV_SRC=".env.arm64"
+  ;;
+  (*)
+    echo x86 CPU detected: $ARCH
+    ENV_SRC=".env.x86"
+  ;;
+esac
+
 #Copy without overwriting
 cp -nv config_examples/* . || true
-cp -nv config_examples/.env . || true
+cp -nv config_examples/${ENV_SRC} ./.env || true
 
 echo Making sure that network exists..
 ./createNetwork.sh || true
 
+echo Starting the containers..
 docker-compose up -d
