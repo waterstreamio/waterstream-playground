@@ -13,12 +13,12 @@ else
 fi
 
 ARCH=$(uname -m)
-case ARCH in
-  (arm64|aarch64|arm64v8)
+case ${ARCH} in
+  arm64|aarch64|arm64v8)
     echo ARM CPU detected: $ARCH
     ENV_SRC=".env.arm64"
   ;;
-  (*)
+  *)
     echo x86 CPU detected: $ARCH
     ENV_SRC=".env.x86"
   ;;
