@@ -17,6 +17,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: "-Xmx300M -Xms256M"
     ports:
       - "2181:2181"
     restart: unless-stopped
@@ -38,18 +39,18 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-      KAFKA_OPTS: "-javaagent:/var/addons/jmx_prometheus_javaagent-0.13.0.jar=9192:/var/addons/jmx_exporter/kafka-0-8-2.yml"
+      KAFKA_OPTS: "-javaagent:/var/addons/jmx_prometheus_javaagent-0.13.0.jar=9192:/var/addons/jmx_exporter/kafka-0-8-2.yml ${KAFKA_OPTS_ADDITIONAL}"
     volumes:
       - ./addons:/var/addons
     ports:
       - "9092:9092"
       - "9192:9192"
     restart: unless-stopped
-    healthcheck:
-      test: "KAFKA_OPTS='' && cub kafka-ready -b kafka:9092 1 60"
-      interval: 5s
-      timeout: 15s
-      start_period: 5s
+#    healthcheck:
+#      test: "KAFKA_OPTS='' && cub kafka-ready -b kafka:9092 1 60"
+#      interval: 5s
+#      timeout: 15s
+#      start_period: 5s
 
   kafka-setup:
     image: "confluentinc/cp-kafka:${CONFLUENT_VERSION}"
